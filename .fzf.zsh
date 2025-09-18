@@ -1,8 +1,22 @@
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+## Install fzf first
+## git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+# ~/.fzf/install
+
+# Setup fzf
+# ---------
+if [[ ! "$PATH" == */home/bento/.fzf/bin* ]]; then
+  PATH="${PATH:+${PATH}:}/home/bento/.fzf/bin"
+fi
+source <(fzf --zsh)
+
+# Note: install dependencies first, e.g. cargo install --locked bat zoxide fd-find
+
 # https://remysharp.com/2018/08/23/cli-improved
 alias preview="fzf --preview 'bat --color \"always\" {}'"
+
 # add support for ctrl+o to open selected file in VS Code
-export FZF_DEFAULT_OPTS="--bind='ctrl-o:execute(code {})+abort'"
+export FZF_DEFAULT_OPTS="--bind='ctrl-o:execute(cursor {})+abort'"
+
 # Use fd (https://github.com/sharkdp/fd) instead of the default find
 # command for listing path candidates.
 # - The first argument to the function ($1) is the base path to start traversal
@@ -10,12 +24,15 @@ export FZF_DEFAULT_OPTS="--bind='ctrl-o:execute(code {})+abort'"
 _fzf_compgen_path() {
   fd --hidden --follow --exclude ".git" . "$1"
 }
+
 # Use fd to generate the list for directory completion
 _fzf_compgen_dir() {
   fd --type d --hidden --follow --exclude ".git" . "$1"
 }
+
 # Follow symbolic links, and don't want it to exclude hidden files
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+
 # To apply the command to CTRL-T as well
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
